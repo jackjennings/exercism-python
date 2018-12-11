@@ -45,7 +45,7 @@ class LinkedList(object):
         return last.value()
 
     def reversed(self):
-        return LinkedList(f for f in self)
+        return LinkedList(self)
 
 
 class EmptyListException(Exception):
