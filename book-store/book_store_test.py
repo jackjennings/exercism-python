@@ -27,6 +27,9 @@ class BookStoreTest(unittest.TestCase):
     def test_five_different_books(self):
         self.assertEqual(calculate_total([1, 2, 3, 4, 5]), 3000)
 
+    def test_six_different_books(self):
+        self.assertEqual(calculate_total([1, 2, 3, 4, 5, 6]), 3600)
+
     def test_two_groups_of_4_is_cheaper_than_group_of_5_plus_group_of_3(self):
         self.assertEqual(calculate_total([1, 1, 2, 2, 3, 3, 4, 5]), 5160)
 
