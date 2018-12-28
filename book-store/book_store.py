@@ -9,14 +9,18 @@ def calculate_total(books):
     total = 0
 
     while counts:
-        remaining = set(counts.elements())
-        subtotal = len(remaining) * 800
-
-        total += subtotal - int(subtotal * discount(len(remaining), default=0.25))
-        counts -= Counter(remaining)
+        group = frozenset(counts.elements())
+        total += price(group, discount(group, default=0.25))
+        counts -= Counter(group)
 
     return total
 
 
-def discount(count, default):
+def discount(items, default):
+    count = len(items)
     return DISCOUNTS[count] if count in DISCOUNTS else default
+
+
+def price(items, discount):
+    subtotal = len(items) * 800
+    return subtotal - int(subtotal * discount)
