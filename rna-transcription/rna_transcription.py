@@ -1,5 +1,5 @@
-COUNTERPARTS = {"A": "U", "C": "G", "G": "C", "T": "A"}
+RNA_TABLE = str.maketrans("GCTA", "CGAU")
 
 
 def to_rna(dna_strand):
-    return "".join(COUNTERPARTS[n] for n in list(dna_strand))
+    return dna_strand.translate(RNA_TABLE)
