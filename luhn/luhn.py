@@ -1,39 +1,47 @@
 from string import whitespace
 
 
+WHITESPACE_FILTER = dict.fromkeys(map(ord, whitespace))
+
+
 class Luhn(object):
     def __init__(self, card_number):
-        self.card_number = card_number
+        self.card_number = card_number.translate(WHITESPACE_FILTER)
 
     def is_valid(self):
         try:
-            return len(self.sanitized_card_number) >= 2 and self.checksum == 0
+            return len(self.card_number) >= 2 and self.checksum == 0
         except ValueError as e:
             return False
 
     @property
+    def card_numbers(self):
+        return [int(d) for d in list(self.card_number)]
+
+    @property
     def checksum(self):
-        return sum(Digit(l, i) for i, l in enumerate(reversed(self.digits))) % 10
+        return sum(self.digits) % 10
 
     @property
     def digits(self):
-        return [int(d) for d in list(self.sanitized_card_number)]
-
-    @property
-    def sanitized_card_number(self):
-        return self.card_number.translate(dict.fromkeys(map(ord, whitespace)))
+        return [Digit(l, i) for i, l in enumerate(reversed(self.card_numbers))]
 
 
 class Digit(object):
-    def __init__(self, value, index):
-        self.value = value
+    def __init__(self, base, index):
+        self.base = base
         self.index = index
 
     def __radd__(self, other):
-        return self._clamp(self.value * self._multiplier(self.index)) + other
+        return self.value + other
 
-    def _multiplier(self, index):
-        return index % 2 + 1
+    @property
+    def multiplier(self):
+        return self.index % 2 + 1
+
+    @property
+    def value(self):
+        return self._clamp(self.base * self.multiplier)
 
     def _clamp(self, value):
         if value > 9:
