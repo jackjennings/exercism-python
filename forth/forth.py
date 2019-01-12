@@ -16,7 +16,10 @@ def evaluate(input_data):
         "over": over,
     }
 
-    return execute(commands, stack, input_data)
+    while input_data:
+        commands, stack, input_data = execute(commands, stack, input_data)
+
+    return stack
 
 
 def execute(commands, stack, lines):
@@ -27,9 +30,10 @@ def execute(commands, stack, lines):
 
     if line[0] == ":":
         keyword, procedure = line[2:-2].split(None, 1)
-        return execute(define(commands, keyword, procedure), stack, lines)
+
+        return define(commands, keyword, procedure), stack, lines
     else:
-        return execute(commands, append(commands, stack, line), lines)
+        return commands, append(commands, stack, line), lines
 
 
 def append(commands, stack, line):
@@ -59,7 +63,7 @@ def define(commands, keyword, procedure):
 
     return {
         **commands,
-        keyword.lower(): lambda stack: execute(commands, stack, [procedure]),
+        keyword.lower(): lambda stack: append(commands, stack, procedure),
     }
 
 
